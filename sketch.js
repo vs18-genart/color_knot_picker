@@ -7,7 +7,6 @@ let bg = "#505050";
 
 function setup() {
   createCanvas(windowWidth,windowHeight, WEBGL);
-  //cnv.mouseClicked(togglePlay);
   background(bg);
 }
 
