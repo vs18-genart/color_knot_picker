@@ -1,7 +1,7 @@
 
 
 let AVAILABLE_COLOR_SPACES = ["RGB", "HSB"];
-let CURRENT_COLOR_SPACE = "RGB";
+let CURRENT_COLOR_SPACE = "HSB";
 let bg = "#505050";
 
 
@@ -13,9 +13,8 @@ function setup() {
 function draw() {
   background(bg);
   rotateX(PI);
-  rotateY(frameCount*0.02);
+  rotateY(frameCount*0.01);
   drawBox();
-
 }
 
 function keyPressed(){
@@ -25,29 +24,63 @@ function keyPressed(){
 
 // draws the boundary of the color domain to the canvas
 function drawBox(){
-  if (CURRENT_COLOR_SPACE == "HSB") {colorMode(HSB,255,255,255);}
-  if (CURRENT_COLOR_SPACE == "RGB") {colorMode(RGB,255,255,255);}
-
   if(CURRENT_COLOR_SPACE == "HSB"){
-    //translate(-width/2,-height/2);
+    HSB_space.drawBox();
+  }
+  else{
+    RGB_space.drawBox();
+  }
+
+}
+
+
+// TODO: COLOR_SPACE class that implements the domain and has the drawBox inside
+// it should have max boundaries for the 3 dimensions, label, 
+
+// TODO: KNOT class that implements knots mathematically
+
+// TODO: MAP knots to the current color space
+
+const HSB_space = {
+  label: "HSB",
+  x: "H",
+  y: "S",
+  z: "B",
+  drawBox: function() {
+    push();
+    colorMode(HSB,255,255,255);
     let h_steps = 50;
-    let s_steps = 15;
-    let b_steps = 2;
+    let s_steps = 5;
+    let b_steps = 4;
     for(let i =0;i<h_steps;i++){
       for(let j =0; j<b_steps; j++){
         for(let k =0; k<s_steps; k++){
-            let p = new createVector(j*255*cos(i/h_steps*TWO_PI),
+            let p = new createVector(j/(b_steps-1)*255*cos(i/h_steps*TWO_PI),
                                     1.0*k/s_steps*255 -255/2,
-                                    j*255*sin(i/h_steps*TWO_PI));
-            stroke(map(atan2(p.z,p.x),-PI,PI,0,255),dist(0,0,p.x,p.z), p.y+255/2);
+                                    j/(b_steps-1)*255*sin(i/h_steps*TWO_PI));
+            let h = map(atan2(p.z,p.x),-PI,PI,0,255);
+            let s = dist(0,0,p.x,p.z);
+            let b = p.y+255/2;
+            stroke(h,s,b);
             point(p.x,p.y,p.z);
-            //point(i*255 -255/2,j*255 -255/2,k*255 -255/2);
         }
       }  
     }
+    pop();
   }
-  else{
+};
+
+
+const RGB_space = {
+  label: "RGB",
+  x: "R",
+  y: "G",
+  z: "B",
+  drawBox: function() {
+    //translate(-width/2,-height/2);
+    
     push();
+    colorMode(RGB,255,255,255);
     translate(-255/2,-255/2,-255/2);
     let n_steps = 20;
     // x axis = R
@@ -80,15 +113,4 @@ function drawBox(){
     
     pop();
   }
-
-}
-
-
-// TODO: COLOR_SPACE class that implements the domain and has the drawBox inside
-// it should have max boundaries for the 3 dimensions, label, 
-
-// TODO: KNOT class that implements knots mathematically
-
-// TODO: MAP knots to the current color space
-
-
+};
