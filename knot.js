@@ -16,13 +16,12 @@ function Knot(_p, _q){
         let res= createVector(  r * cos(this.p*t),
                                 -sin(this.q*t),
                                 r * sin(this.p*t));
-        // res.x*=scale.x;
-        // res.y*=scale.y;
-        // res.z*=scale.z;
+
+        res.mult(this.scale);
         //rotate in z, y, x
         // res = rotX(this.r_x,res.copy());
         // res = rotY(this.r_y,res.copy());
-        // res = rotZ(this.r_z,res.copy());
+        //res = rotZ(this.r_z,res);
         
         res.add(this.center);
         return res;
@@ -31,14 +30,13 @@ function Knot(_p, _q){
 
 
 function rotZ( ang, p){
-    let pp= p.copy();
     let m = [   [cos(ang), -sin(ang),  0.],
                 [sin(ang),  cos(ang),  0.],
                 [     0.0,       0.0,  1.]];
                         
-    return createVector(m[0][0]*pp[0]+m[0][1]*pp[1]+m[0][2]*pp[2],
-                        m[1][0]*pp[0]+m[1][1]*pp[1]+m[1][2]*pp[2],
-                        m[2][0]*pp[0]+m[2][1]*pp[1]+m[2][2]*pp[2]);
+    return createVector(m[0][0]*p[0]+m[0][1]*p[1]+m[0][2]*p[2],
+                        m[1][0]*p[0]+m[1][1]*p[1]+m[1][2]*p[2],
+                        m[2][0]*p[0]+m[2][1]*p[1]+m[2][2]*p[2]);
 }
 
 function rotY( ang, p){
