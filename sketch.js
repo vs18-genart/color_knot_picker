@@ -39,12 +39,13 @@ const HSB_space = {
     let h = map(atan2(p.z,p.x),-PI,PI,0,255);
     let s = dist(0,0,p.x,p.z);
     let b = p.y;
+    //return createVector(255,0,255);
     return createVector(h,s,b);
   },
-  mapPoint: function(p){
-    let x = map(p.x, -1,1, 0, this.maxX);
-    let y = map(p.y, -1,1, 0, this.maxY);
-    let z = map(p.z, -1,1, 0, this.maxZ);
+  mapPoint: function(p){ // HSB space 
+    let x = map(p.x, -1,1, this.minX, this.maxX);
+    let y = map(p.y, -1,1, this.minY, this.maxY);
+    let z = map(p.z, -1,1, this.minZ, this.maxZ);
     return createVector(x,y,z);
   }
 
@@ -101,17 +102,19 @@ const RGB_space = {
     return createVector(r,g,b);
   },
   mapPoint: function(p){
-    let x = map(p.x, -1,1, this.minX, this.maxX);
+    let x = map(p.x, -1,1, this.minX, this.maxX)-255/2;
     let y = map(p.y, -1,1, this.minY, this.maxY);
-    let z = map(p.z, -1,1, this.minZ, this.maxZ);
+    let z = map(p.z, -1,1, this.minZ, this.maxZ)-255/2;
     return createVector(x,y,z);
   }
 };
 
 // ==============================================================================
+// ==============================================================================
+
 
 let AVAILABLE_COLOR_SPACES = ["RGB", "HSB"];
-let CURRENT_COLOR_SPACE = RGB_space;
+let CURRENT_COLOR_SPACE = HSB_space;
 let bg = "#505050";
 
 let knot;
@@ -119,7 +122,7 @@ let knot;
 function setup() {
   createCanvas(windowWidth,windowHeight, WEBGL);
   background(bg);
-  knot = new Knot(2,3);
+  knot = new Knot(2,5);
 }
 
 function draw() {
@@ -141,7 +144,9 @@ function keyPressed(){
 
 function showKnot(k){
   push();
-  translate(-255/2,-255/2, -255/2);
+  //translate(-255/2,-255/2, -255/2);
+  translate(0,-255/2, 0);
+  //translate(-255/2,-255/2, -255/2);
   CURRENT_COLOR_SPACE.setColorMode();
   let N = 200;
   for(let i =0; i<N; i++){
